@@ -41,11 +41,21 @@
 
     <style>
         /* --- CORE STYLES --- */
+        * {
+            box-sizing: border-box;
+        }
+        
+        html {
+            font-size: 16px;
+        }
+        
         body {
             background-color: #000000;
-            color: #e5e7eb;
+            color: #f0f0f0;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
 
         /* --- CANVAS --- */
@@ -56,57 +66,77 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            opacity: 0.6; /* Subtle background */
+            opacity: 0.5;
         }
 
-        /* --- OBSIDIAN CARD STYLING --- */
+        /* --- 3D OBSIDIAN CARD STYLING --- */
         .obsidian-card {
-            background: rgba(10, 10, 10, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            background: linear-gradient(145deg, rgba(25, 25, 25, 0.9), rgba(10, 10, 10, 0.95));
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.6),
+                0 2px 8px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+            transform-style: preserve-3d;
+            will-change: transform, box-shadow;
         }
 
         .obsidian-card:hover {
-            background: rgba(20, 20, 20, 0.8);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            background: linear-gradient(145deg, rgba(35, 35, 35, 0.95), rgba(15, 15, 15, 0.98));
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: perspective(1000px) rotateX(2deg) translateY(-8px) scale(1.02);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.8),
+                0 8px 24px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(255, 255, 255, 0.03);
         }
 
         /* --- IMAGES & BADGES --- */
         .profile-img-container {
             position: relative;
-            padding: 2px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+            padding: 3px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.3), rgba(255,255,255,0.08));
             border-radius: 50%;
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.4),
+                inset 0 1px 2px rgba(255, 255, 255, 0.1);
         }
 
         .profile-img {
-            filter: grayscale(100%) contrast(1.1);
+            filter: grayscale(100%) contrast(1.15) brightness(1.05);
             transition: 0.5s ease;
         }
 
         .obsidian-card:hover .profile-img {
-            filter: grayscale(0%);
+            filter: grayscale(0%) brightness(1.1);
         }
 
         /* --- ICONS --- */
         .social-link {
-            color: #525252;
+            color: #9ca3af;
             transition: all 0.3s ease;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
         .social-link:hover {
             color: #ffffff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
 
         /* --- UTILITIES --- */
         .tech-line {
             width: 1px;
             height: 40px;
-            background: linear-gradient(to bottom, transparent, #333, transparent);
+            background: linear-gradient(to bottom, transparent, #444, transparent);
             margin: 0 auto;
         }
 
@@ -125,11 +155,67 @@
             position: fixed;
             inset: 0;
             background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 100px 100px;
+                linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+            background-size: 80px 80px;
             pointer-events: none;
             z-index: 1;
+        }
+        
+        /* --- RESPONSIVE OPTIMIZATIONS --- */
+        @media (max-width: 480px) {
+            html {
+                font-size: 14px;
+            }
+            .obsidian-card {
+                padding: 1.25rem !important;
+            }
+            .obsidian-card:hover {
+                transform: perspective(1000px) translateY(-4px) scale(1.01);
+            }
+        }
+        
+        @media (min-width: 481px) and (max-width: 768px) {
+            html {
+                font-size: 15px;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            html {
+                font-size: 15.5px;
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            html {
+                font-size: 16px;
+            }
+        }
+        
+        @media (min-width: 1440px) {
+            html {
+                font-size: 17px;
+            }
+        }
+        
+        /* High contrast text improvements */
+        .text-enhanced {
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Reduce motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            .obsidian-card {
+                transition: none;
+            }
+            .obsidian-card:hover {
+                transform: none;
+            }
+            @keyframes fadeIn {
+                from { opacity: 1; transform: none; }
+                to { opacity: 1; transform: none; }
+            }
         }
     </style>
 </head>
@@ -138,44 +224,44 @@
     <canvas id="atomic-canvas"></canvas>
     <div class="grid-texture"></div>
 
-    <main class="relative z-10 min-h-screen flex flex-col items-center justify-center py-12 px-4">
+    <main class="relative z-10 min-h-screen flex flex-col items-center justify-center py-8 sm:py-10 md:py-12 px-3 sm:px-4">
         
         <!-- Header -->
-        <header class="text-center mb-16 max-w-3xl animate-fade-in opacity-0 forwards">
-            <div class="inline-flex items-center gap-2 mb-6 px-3 py-1 border border-white/10 rounded-full bg-white/5">
+        <header class="text-center mb-12 sm:mb-16 max-w-3xl animate-fade-in opacity-0 forwards px-2">
+            <div class="inline-flex items-center gap-2 mb-5 sm:mb-6 px-3 py-1.5 border border-white/15 rounded-full bg-white/5">
                 <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-                <span class="font-mono text-xs text-gray-400 tracking-widest uppercase">IIM ATM 2025 Poster Presentation</span>
+                <span class="font-mono text-[10px] sm:text-xs text-gray-300 tracking-widest uppercase">IIM ATM 2025 Poster Presentation</span>
             </div>
             
-            <h1 class="font-sans font-bold text-3xl md:text-5xl tracking-tight text-white mb-4">
+            <h1 class="font-sans font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-white mb-4 text-enhanced leading-tight">
                 DATA-DRIVEN BALLISTIC<br/>PROPERTY PREDICTION
             </h1>
             
-            <p class="font-mono text-dim text-sm md:text-base max-w-2xl mx-auto border-l border-white/10 pl-4 text-left md:text-center md:border-l-0 md:pl-0">
+            <p class="font-mono text-gray-400 text-xs sm:text-sm md:text-base max-w-2xl mx-auto border-l-2 border-white/20 pl-4 text-left md:text-center md:border-l-0 md:pl-0 leading-relaxed">
                 Ceramic Armor Materials for Advanced Protection Systems
             </p>
         </header>
 
         <!-- Hierarchy Layout: Triangle (Top: First Author, Bottom: Co-authors) -->
-        <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-12 relative">
+        <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-10 relative px-2 sm:px-4">
             
             <!-- 1. FIRST AUTHOR (Center Top on Desktop, First on Mobile) -->
             <!-- Using col-span-full to center in grid -->
-            <div class="md:col-span-2 flex justify-center order-1 mb-8 md:mb-0">
-                <div class="obsidian-card w-full max-w-[380px] p-8 rounded-2xl flex flex-col items-center text-center animate-fade-in delay-100 opacity-0 forwards border-t border-t-white/20">
+            <div class="md:col-span-2 flex justify-center order-1 mb-6 md:mb-4">
+                <div class="obsidian-card w-full max-w-[340px] sm:max-w-[380px] p-5 sm:p-6 md:p-8 rounded-2xl flex flex-col items-center text-center animate-fade-in delay-100 opacity-0 forwards">
                     
-                    <div class="profile-img-container w-28 h-28 mb-6">
+                    <div class="profile-img-container w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mb-4 sm:mb-6">
                         <img src="https://ui-avatars.com/api/?name=M+S+Rishav&background=1a1a1a&color=ffffff&size=128" alt="First Author" class="profile-img w-full h-full rounded-full object-cover">
                     </div>
                     
-                    <span class="px-3 py-1 mb-3 text-[10px] font-mono tracking-widest uppercase text-black bg-white rounded-sm font-bold">First Author</span>
+                    <span class="px-3 py-1 mb-3 text-[9px] sm:text-[10px] font-mono tracking-widest uppercase text-black bg-white rounded-sm font-bold shadow-lg">First Author</span>
                     
-                    <h2 class="font-sans text-2xl font-bold text-white mb-1">M S Rishav Subhin</h2>
-                    <p class="font-mono text-xs text-dim uppercase tracking-wider mb-6">Dept. of Electronics & Communication Eng</p>
+                    <h2 class="font-sans text-xl sm:text-2xl font-bold text-white mb-1 text-enhanced">M S Rishav Subhin</h2>
+                    <p class="font-mono text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider mb-4 sm:mb-6">Dept. of Electronics & Communication Eng</p>
                     
-                    <div class="w-full border-t border-white/10 my-4"></div>
+                    <div class="w-full border-t border-white/15 my-3 sm:my-4"></div>
                     
-                    <div class="flex gap-6 text-lg">
+                    <div class="flex gap-5 sm:gap-6 text-base sm:text-lg">
                         <a href="https://www.linkedin.com/in/m-s-rishav-subhin/" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
                         <a href="https://github.com/msrishav-28" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
                         <a href="mailto:ms.rishav289@gmail.com" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>
@@ -185,15 +271,15 @@
 
             <!-- 2. FACULTY (Bottom Left) -->
             <div class="flex justify-center md:justify-end order-2">
-                <div class="obsidian-card w-full max-w-sm p-6 rounded-2xl flex flex-col items-center text-center animate-fade-in delay-200 opacity-0 forwards">
-                    <div class="profile-img-container w-20 h-20 mb-4">
+                <div class="obsidian-card w-full max-w-[300px] sm:max-w-sm p-4 sm:p-5 md:p-6 rounded-2xl flex flex-col items-center text-center animate-fade-in delay-200 opacity-0 forwards">
+                    <div class="profile-img-container w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 mb-3 sm:mb-4">
                         <img src="https://ui-avatars.com/api/?name=Naveen+J&background=1a1a1a&color=a0a0a0&size=128" alt="Co-Author" class="profile-img w-full h-full rounded-full object-cover">
                     </div>
-                    <span class="font-mono text-[10px] text-gray-500 uppercase tracking-widest mb-2">Co-Author</span>
-                    <h2 class="font-sans text-xl font-semibold text-gray-200">Naveen Josh S</h2>
-                    <p class="font-sans text-xs text-dim mt-1">Dept. of Computer Science & Eng</p>
+                    <span class="font-mono text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-widest mb-2">Co-Author</span>
+                    <h2 class="font-sans text-lg sm:text-xl font-semibold text-gray-100 text-enhanced">Naveen Josh S</h2>
+                    <p class="font-sans text-[10px] sm:text-xs text-gray-500 mt-1">Dept. of Computer Science & Eng</p>
                     
-                    <div class="flex gap-4 mt-4 text-sm">
+                    <div class="flex gap-4 mt-3 sm:mt-4 text-sm">
                         <a href="https://www.linkedin.com/in/naveenjosh2005/" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
                         <a href="https://github.com/Naveen200524" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
                         <a href="mailto:naveen.josh2405@gmail.com" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>
@@ -203,25 +289,25 @@
 
             <!-- 3. CO-AUTHOR STUDENT (Bottom Right) -->
             <div class="flex justify-center md:justify-start order-3">
-                <div class="obsidian-card w-full max-w-sm p-6 rounded-2xl flex flex-col items-center text-center animate-fade-in delay-300 opacity-0 forwards">
-                    <div class="profile-img-container w-20 h-20 mb-4">
+                <div class="obsidian-card w-full max-w-[300px] sm:max-w-sm p-4 sm:p-5 md:p-6 rounded-2xl flex flex-col items-center text-center animate-fade-in delay-300 opacity-0 forwards">
+                    <div class="profile-img-container w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 mb-3 sm:mb-4">
                         <img src="https://ui-avatars.com/api/?name=Mungara+J&background=1a1a1a&color=a0a0a0&size=128" alt="Co-Author" class="profile-img w-full h-full rounded-full object-cover">
                     </div>
-                    <span class="font-mono text-[10px] text-gray-500 uppercase tracking-widest mb-2">Co-Author</span>
-                    <h2 class="font-sans text-xl font-semibold text-gray-200">Mungara John Silvister Raju</h2>
-                    <p class="font-sans text-xs text-dim mt-1">Dept. of Mechanical & Automobile Eng</p>
+                    <span class="font-mono text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-widest mb-2">Co-Author</span>
+                    <h2 class="font-sans text-lg sm:text-xl font-semibold text-gray-100 text-enhanced">Mungara John Silvister Raju</h2>
+                    <p class="font-sans text-[10px] sm:text-xs text-gray-500 mt-1">Dept. of Mechanical & Automobile Eng</p>
                     
-                    <div class="flex gap-4 mt-4 text-sm">
-                        <a href="https://www.linkedin.com/in/jsrajumungara/" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="mailto:john.silvister@christuniversity.in" class="social-link"><i class="fas fa-envelope"></i></a>
+                    <div class="flex gap-4 mt-3 sm:mt-4 text-sm">
+                        <a href="https://www.linkedin.com/in/jsrajumungara/" class="social-link" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="mailto:john.silvister@christuniversity.in" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <footer class="mt-24 text-center animate-fade-in delay-300 opacity-0 forwards">
-            <a href="#" class="inline-flex items-center gap-3 px-6 py-3 border border-white/20 hover:border-white text-xs font-mono uppercase tracking-widest transition-colors bg-black/50 backdrop-blur-sm">
+        <footer class="mt-16 sm:mt-20 md:mt-24 text-center animate-fade-in delay-300 opacity-0 forwards px-4">
+            <a href="#" class="inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-6 py-2.5 sm:py-3 border border-white/25 hover:border-white/60 text-[10px] sm:text-xs font-mono uppercase tracking-widest transition-all duration-300 bg-black/60 backdrop-blur-sm rounded-sm hover:bg-white/5 text-gray-200 hover:text-white">
                 <span>Download Abstract</span>
                 <i class="fas fa-arrow-down"></i>
             </a>
