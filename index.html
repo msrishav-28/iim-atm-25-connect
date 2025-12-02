@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materials Research Group | IIM ATM 2025</title>
+    
+    <!-- Fonts: Inter for UI, Orbitron for headers (Keep it minimal), JetBrains Mono for data -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@200;400;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'carbon': '#0a0a0a',
+                        'graphite': '#1a1a1a',
+                        'steel': '#e5e7eb',
+                        'dim': '#525252',
+                    },
+                    fontFamily: {
+                        'sans': ['Manrope', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- CORE STYLES --- */
+        body {
+            background-color: #000000;
+            color: #e5e7eb;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- CANVAS --- */
+        #atomic-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.6; /* Subtle background */
+        }
+
+        /* --- OBSIDIAN CARD STYLING --- */
+        .obsidian-card {
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .obsidian-card:hover {
+            background: rgba(20, 20, 20, 0.8);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        /* --- IMAGES & BADGES --- */
+        .profile-img-container {
+            position: relative;
+            padding: 2px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+            border-radius: 50%;
+        }
+
+        .profile-img {
+            filter: grayscale(100%) contrast(1.1);
+            transition: 0.5s ease;
+        }
+
+        .obsidian-card:hover .profile-img {
+            filter: grayscale(0%);
+        }
+
+        /* --- ICONS --- */
+        .social-link {
+            color: #525252;
+            transition: all 0.3s ease;
+        }
+        .social-link:hover {
+            color: #ffffff;
+        }
+
+        /* --- UTILITIES --- */
+        .tech-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, transparent, #333, transparent);
+            margin: 0 auto;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+
+        /* Grid Texture */
+        .grid-texture {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 100px 100px;
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="selection:bg-white selection:text-black">
+
+    <canvas id="atomic-canvas"></canvas>
+    <div class="grid-texture"></div>
+
+    <main class="relative z-10 min-h-screen flex flex-col items-center justify-center py-12 px-4">
+        
+        <!-- Header -->
+        <header class="text-center mb-16 max-w-3xl animate-fade-in opacity-0 forwards">
+            <div class="inline-flex items-center gap-2 mb-6 px-3 py-1 border border-white/10 rounded-full bg-white/5">
+                <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                <span class="font-mono text-xs text-gray-400 tracking-widest uppercase">IIM ATM 2025 Poster Presentation</span>
+            </div>
+            
+            <h1 class="font-sans font-bold text-3xl md:text-5xl tracking-tight text-white mb-4">
+                DATA-DRIVEN BALLISTIC<br/>PROPERTY PREDICTION
+            </h1>
+            
+            <p class="font-mono text-dim text-sm md:text-base max-w-2xl mx-auto border-l border-white/10 pl-4 text-left md:text-center md:border-l-0 md:pl-0">
+                Ceramic Armor Materials for Advanced Protection Systems
+            </p>
+        </header>
+
+        <!-- Hierarchy Layout: Triangle (Top: First Author, Bottom: Co-authors) -->
+        <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-12 relative">
+            
+            <!-- 1. FIRST AUTHOR (Center Top on Desktop, First on Mobile) -->
+            <!-- Using col-span-full to center in grid -->
+            <div class="md:col-span-2 flex justify-center order-1 mb-8 md:mb-0">
+                <div class="obsidian-card w-full max-w-[380px] p-8 rounded-2xl flex flex-col items-center text-center animate-fade-in delay-100 opacity-0 forwards border-t border-t-white/20">
+                    
+                    <div class="profile-img-container w-28 h-28 mb-6">
+                        <img src="https://ui-avatars.com/api/?name=M+S+Rishav&background=1a1a1a&color=ffffff&size=128" alt="First Author" class="profile-img w-full h-full rounded-full object-cover">
+                    </div>
+                    
+                    <span class="px-3 py-1 mb-3 text-[10px] font-mono tracking-widest uppercase text-black bg-white rounded-sm font-bold">First Author</span>
+                    
+                    <h2 class="font-sans text-2xl font-bold text-white mb-1">M S Rishav Subhin</h2>
+                    <p class="font-mono text-xs text-dim uppercase tracking-wider mb-6">Dept. of Electronics & Communication Eng</p>
+                    
+                    <div class="w-full border-t border-white/10 my-4"></div>
+                    
+                    <div class="flex gap-6 text-lg">
+                        <a href="https://www.linkedin.com/in/m-s-rishav-subhin/" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/msrishav-28" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="mailto:ms.rishav289@gmail.com" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. FACULTY (Bottom Left) -->
+            <div class="flex justify-center md:justify-end order-2">
+                <div class="obsidian-card w-full max-w-sm p-6 rounded-2xl flex flex-col items-center text-center animate-fade-in delay-200 opacity-0 forwards">
+                    <div class="profile-img-container w-20 h-20 mb-4">
+                        <img src="https://ui-avatars.com/api/?name=Naveen+J&background=1a1a1a&color=a0a0a0&size=128" alt="Co-Author" class="profile-img w-full h-full rounded-full object-cover">
+                    </div>
+                    <span class="font-mono text-[10px] text-gray-500 uppercase tracking-widest mb-2">Co-Author</span>
+                    <h2 class="font-sans text-xl font-semibold text-gray-200">Naveen Josh S</h2>
+                    <p class="font-sans text-xs text-dim mt-1">Dept. of Computer Science & Eng</p>
+                    
+                    <div class="flex gap-4 mt-4 text-sm">
+                        <a href="https://www.linkedin.com/in/naveenjosh2005/" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/Naveen200524" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="mailto:naveen.josh2405@gmail.com" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. CO-AUTHOR STUDENT (Bottom Right) -->
+            <div class="flex justify-center md:justify-start order-3">
+                <div class="obsidian-card w-full max-w-sm p-6 rounded-2xl flex flex-col items-center text-center animate-fade-in delay-300 opacity-0 forwards">
+                    <div class="profile-img-container w-20 h-20 mb-4">
+                        <img src="https://ui-avatars.com/api/?name=Mungara+J&background=1a1a1a&color=a0a0a0&size=128" alt="Co-Author" class="profile-img w-full h-full rounded-full object-cover">
+                    </div>
+                    <span class="font-mono text-[10px] text-gray-500 uppercase tracking-widest mb-2">Co-Author</span>
+                    <h2 class="font-sans text-xl font-semibold text-gray-200">Mungara John Silvister Raju</h2>
+                    <p class="font-sans text-xs text-dim mt-1">Dept. of Mechanical & Automobile Eng</p>
+                    
+                    <div class="flex gap-4 mt-4 text-sm">
+                        <a href="https://www.linkedin.com/in/jsrajumungara/" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="mailto:john.silvister@christuniversity.in" class="social-link"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="mt-24 text-center animate-fade-in delay-300 opacity-0 forwards">
+            <a href="#" class="inline-flex items-center gap-3 px-6 py-3 border border-white/20 hover:border-white text-xs font-mono uppercase tracking-widest transition-colors bg-black/50 backdrop-blur-sm">
+                <span>Download Abstract</span>
+                <i class="fas fa-arrow-down"></i>
+            </a>
+        </footer>
+
+    </main>
+
+    <!-- Monochromatic Particle Network -->
+    <script>
+        const canvas = document.getElementById('atomic-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        // Config: Darker, subtle, slower
+        const particleCount = window.innerWidth < 768 ? 40 : 90; 
+        const connectionDistance = 140;
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.2; // Slower speed
+                this.vy = (Math.random() - 0.5) * 0.2;
+                this.size = Math.random() * 1.5 + 0.5; // Smaller particles
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)'; // White/Grey
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                
+                for (let j = i; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        ctx.beginPath();
+                        let opacity = 1 - (distance / connectionDistance);
+                        // Very faint grey lines
+                        ctx.strokeStyle = 'rgba(255, 255, 255,' + (opacity * 0.08) + ')'; 
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
